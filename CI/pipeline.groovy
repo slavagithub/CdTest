@@ -1,4 +1,5 @@
 import groovy.json.JsonSlurper
+import jenkins.model.*
 
 static void doit(String[] args) {
 //    Example.sum(5, 8)
@@ -12,7 +13,7 @@ static void doit(String[] args) {
 }
 
 static void doJob(){
-import jenkins.model.*
+
 
 def jobName = "my-new-job"
 def configXml = new File('myjob.xml').text 
