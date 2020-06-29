@@ -17,14 +17,14 @@ static String getPaht(){
 @SourceURI
 URI sourceUri
 println "PATH IS"
-return "PATH IS"+sourceUri.toString()
+return "PATH IS"+pwd()
 
 }
 
 static void doJob(){
 
-env.WORKSPACE = pwd()
-def version = readFile "${env.WORKSPACE}/myjob.xml"
+
+def version = readFile pwd()+"/myjob.xml"
 
 @SourceURI
 URI sourceUri
