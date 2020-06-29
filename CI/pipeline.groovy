@@ -47,7 +47,7 @@ pipeline {
         }
 		 stage('Git'){
             steps{
-            bat("git status")
+            bat("dir")
             }
         }
 		
