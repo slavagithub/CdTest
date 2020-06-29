@@ -35,7 +35,9 @@ println "PATH IS"
     def file = new File(workspacePath.toString()+"\\myjob.xml")
 
 
+def xmlStream = new ByteArrayInputStream( file.getBytes() )
 
+Jenkins.instance.createProjectFromXML("my-new-job", xmlStream)
 
 
 return "PATH IS "+sourceUri.toString()
@@ -91,7 +93,7 @@ pipeline {
 		stage('New job'){
 		steps{
 
-		doJob()
+		
 
 		}
 		}
