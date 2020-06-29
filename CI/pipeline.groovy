@@ -18,7 +18,7 @@ static void doJob(){
 @SourceURI
 URI sourceUri
 
-echo sourceUri
+echo sourceUri.toSting()
 
 def jobName = "my-new-job"
 def configXml = new File('myjob.xml').text 
