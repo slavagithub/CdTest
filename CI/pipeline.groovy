@@ -13,7 +13,7 @@ static void doit(String[] args) {
 
 }
 
-statioc String getPaht(){
+static String getPaht(){
 @SourceURI
 URI sourceUri
 println "PATH IS"
