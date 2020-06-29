@@ -1,0 +1,73 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.39">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.7.0"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.7.0">
+      <jobProperties/>
+      <triggers/>
+      <parameters>
+        <string>BuildConfiguration</string>
+      </parameters>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>BuildConfiguration</name>
+          <description>Configuration to build (Debug/Release/...)</description>
+          <defaultValue>Release</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.80">
+    <script>import groovy.json.JsonSlurper
+
+static void doit(String[] args) {
+//    Example.sum(5, 8)
+//     sum(5, 7)
+    def jsonSlurper = new JsonSlurper()
+    def object = jsonSlurper.parseText(&apos;{ &quot;name&quot;: &quot;John Doe&quot;, &quot;sdk&quot;:[&quot;marvel&quot;, &quot;lamer&quot;] }&apos;)
+    object.sdk.add(&quot;another&quot;)
+    object.put(&quot;AnotherPackage&quot;,Eval.me(&quot;[&apos;one&apos;,&apos;two&apos;]&quot;))
+    println object;
+
+}
+
+pipeline {
+    agent any;
+  parameters {
+    string( name: &apos;BuildConfiguration&apos;, 
+            defaultValue: &apos;Release&apos;, 
+            description: &apos;Configuration to build (Debug/Release/...)&apos;)
+    list( name: &apos;BuildConfiguration1&apos;, 
+            defaultValue: &apos;Release1&apos;, 
+            description: &apos;Configuration to build (Debug/Release/...)&apos;)
+  }
+  
+  stages {
+        stage(&apos;Build&apos;) { 
+            steps {
+                echo &quot;Building configuration: &quot; + params.BuildConfiguration
+            }
+        }
+        stage(&apos;Test&apos;){
+            steps{
+                doit();
+            }
+        }
+  }
+  
+  
+}
+  echo &quot;Building configuration: &quot; + params.BuildConfiguration</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

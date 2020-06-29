@@ -11,6 +11,17 @@ static void doit(String[] args) {
 
 }
 
+static void doJob(){
+import jenkins.model.*
+
+def jobName = "my-new-job"
+def configXml = new File('myjob.xml').text 
+
+def xmlStream = new ByteArrayInputStream( configXml.getBytes() )
+
+Jenkins.instance.createProjectFromXML(jobName, xmlStream)
+}
+
 pipeline {
     agent any;
   parameters {
@@ -38,6 +49,13 @@ pipeline {
             bat("git status")
             }
         }
+		
+		stage('New job'){
+		steps{
+		doJob()
+
+		}
+		}
   }
   
   
