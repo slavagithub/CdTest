@@ -37,7 +37,7 @@ println "PATH IS"
 
 def xmlStream = new ByteArrayInputStream( file.getBytes() )
 
-def folder = jenkins.getItem("DEV2Deploy")
+def folder = jenkins.getItem("Routing/DEV2Deploy")
 
 folder.createProjectFromXML("my-new-job", xmlStream)
 
