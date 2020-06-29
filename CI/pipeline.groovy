@@ -39,13 +39,15 @@ println "PATH IS"
 
 def xmlStream = new ByteArrayInputStream( file.getBytes() )
 
-def folder = jenkins.getItem("Routing/DEV2Deploy")
+def folder = jenkins.getItem("Routing")
+
+def lastFolder = folder.getItem("DEV2Deploy/")
 
 if (folder == null) {
   folder = jenkins.createProject(Folder.class, "Routing/DEV2Deploy")
 }
 
-folder.createProjectFromXML("my-new-job", xmlStream)
+lastFolder.createProjectFromXML("my-new-job", xmlStream)
 
 
 return "PATH IS "+sourceUri.toString()
