@@ -1,5 +1,6 @@
 import groovy.json.JsonSlurper
 import jenkins.model.*
+import groovy.transform.SourceURI
 
 static void doit(String[] args) {
 //    Example.sum(5, 8)
@@ -13,9 +14,12 @@ static void doit(String[] args) {
 }
 
 static void doJob(){
-def pt = Sysem.getProperty('user.dir')
 
-echo("WORK DIR: " +	pt);
+@SourceURI
+URI sourceUri
+
+echo sourceUri
+
 def jobName = "my-new-job"
 def configXml = new File('myjob.xml').text 
 
