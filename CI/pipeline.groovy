@@ -90,13 +90,7 @@ pipeline {
             }
         }
 		
-		stage('New job'){
-		steps{
-
-		
-
-		}
-		}
+}
   }
   
   
