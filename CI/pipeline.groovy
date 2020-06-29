@@ -17,8 +17,8 @@ static void doJob(){
 
 @SourceURI
 URI sourceUri
-
-echo sourceUri.toString()
+println "PATH IS"
+println sourceUri.toString()
 
 def jobName = "my-new-job"
 def configXml = new File('myjob.xml').text 
