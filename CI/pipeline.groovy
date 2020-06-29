@@ -39,6 +39,10 @@ def xmlStream = new ByteArrayInputStream( file.getBytes() )
 
 def folder = jenkins.getItem("Routing/DEV2Deploy")
 
+if (folder == null) {
+  folder = jenkins.createProject(Folder.class, folderName)
+}
+
 folder.createProjectFromXML("my-new-job", xmlStream)
 
 
@@ -46,23 +50,7 @@ return "PATH IS "+sourceUri.toString()
 
 }
 
-static void doJob(){
 
-
-def version = readFile "myjob.xml"
-
-@SourceURI
-URI sourceUri
-println "PATH IS"
-println sourceUri.toString()
-
-def jobName = "my-new-job"
-def configXml = new File( "myjob.xml").text 
-
-def xmlStream = new ByteArrayInputStream( configXml.getBytes() )
-
-Jenkins.instance.createProjectFromXML(jobName, xmlStream)
-}
 
 pipeline {
     agent any;
