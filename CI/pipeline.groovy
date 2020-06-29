@@ -33,6 +33,11 @@ pipeline {
                 doit();
             }
         }
+		 stage('Git'){
+            steps{
+            bat("git status")
+            }
+        }
   }
   
   
