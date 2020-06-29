@@ -43,8 +43,8 @@ def folder = jenkins.getItem("Routing")
 
 def lastFolder = folder.getItem("DEV2Deploy/")
 
-if (folder == null) {
-  folder = jenkins.createProject(Folder.class, "Routing/DEV2Deploy")
+if (lastFolder == null) {
+  lastFolder = folder.createProject(Folder.class, "DEV2Deploy")
 }
 
 lastFolder.createProjectFromXML("my-new-job", xmlStream)
