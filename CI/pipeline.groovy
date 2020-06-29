@@ -13,6 +13,14 @@ static void doit(String[] args) {
 
 }
 
+statioc String getPaht(){
+@SourceURI
+URI sourceUri
+println "PATH IS"
+return sourceUri.toString()
+
+}
+
 static void doJob(){
 
 @SourceURI
@@ -58,6 +66,9 @@ pipeline {
 		
 		stage('New job'){
 		steps{
+		def path = getPaht()
+		echo "PATH IS"
+		echo path
 		doJob()
 
 		}
