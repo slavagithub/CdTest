@@ -26,7 +26,7 @@ println "PATH IS"
 //get Jenkins instance
     def jenkins = Jenkins.instance
 //get job Item
-    def item = jenkins.getItemByFullName("The_JOB_NAME")
+    def item = jenkins.getItemByFullName("JF")
     println item
 // get workspacePath for the job Item
     def workspacePath = jenkins.getWorkspaceFor (item)
