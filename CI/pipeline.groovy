@@ -41,7 +41,7 @@ def xmlStream = new ByteArrayInputStream( file.getBytes() )
 
 def folder = jenkins.getItem("Routing")
 
-def lastFolder = folder.getItem("DEV2Deploy/")
+def lastFolder = folder.getItem("DEV2Deploy")
 
 if (lastFolder == null) {
   lastFolder = folder.createProject(Folder.class, "DEV2Deploy")
