@@ -22,7 +22,7 @@ static String getPaht(){
 URI sourceUri
 println "PATH IS"
 
-try{
+
 //get Jenkins instance
     def jenkins = Jenkins.instance
 //get job Item
@@ -35,9 +35,7 @@ try{
     def file = new File(workspacePath.toString()+"\\myjob.xml")
 
 
-} catch (Exception ex){
-    println ex.message
-}
+
 
 
 return "PATH IS "+sourceUri.toString()
@@ -55,7 +53,7 @@ println "PATH IS"
 println sourceUri.toString()
 
 def jobName = "my-new-job"
-def configXml = new File( "${env.WORKSPACE}/myjob.xml").text 
+def configXml = new File( "myjob.xml").text 
 
 def xmlStream = new ByteArrayInputStream( configXml.getBytes() )
 
