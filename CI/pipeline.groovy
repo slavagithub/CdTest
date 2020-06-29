@@ -14,7 +14,7 @@ static void doit(String[] args) {
 
 static void doJob(){
 
-println "WORK DIR: " +System.getProperty("user.dir");
+out.println "WORK DIR: " +	System.getProperty("user.dir");
 def jobName = "my-new-job"
 def configXml = new File('./myjob.xml').text 
 
