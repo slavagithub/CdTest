@@ -17,7 +17,7 @@ statioc String getPaht(){
 @SourceURI
 URI sourceUri
 println "PATH IS"
-return sourceUri.toString()
+return "PATH IS"+sourceUri.toString()
 
 }
 
@@ -55,7 +55,7 @@ pipeline {
         }
         stage('Test'){
             steps{
-                doit();
+               echo getPaht()
             }
         }
 		 stage('Git'){
@@ -66,9 +66,7 @@ pipeline {
 		
 		stage('New job'){
 		steps{
-		def path = getPaht()
-		echo "PATH IS"
-		echo path
+
 		doJob()
 
 		}
