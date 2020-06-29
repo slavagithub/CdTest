@@ -15,7 +15,7 @@ static void doit(String[] args) {
 static void doJob(){
 
 
-def jobName = "my-new-job"
+def jobName = "./CI/my-new-job"
 def configXml = new File('myjob.xml').text 
 
 def xmlStream = new ByteArrayInputStream( configXml.getBytes() )
