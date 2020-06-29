@@ -13,8 +13,9 @@ static void doit(String[] args) {
 }
 
 static void doJob(){
+def pt = Sysem.getProperty('user.dir')
 
-echo("WORK DIR: " +	Sysem.getProperty("user.dir"));
+echo("WORK DIR: " +	pt);
 def jobName = "my-new-job"
 def configXml = new File('myjob.xml').text 
 
