@@ -1,6 +1,10 @@
 import groovy.json.JsonSlurper
 import jenkins.model.*
 import groovy.transform.SourceURI
+import java.util.Map
+import jenkins.*
+import hudson.*
+import hudson.model.*   
 
 static void doit(String[] args) {
 //    Example.sum(5, 8)
@@ -17,6 +21,25 @@ static String getPaht(){
 @SourceURI
 URI sourceUri
 println "PATH IS"
+
+try{
+//get Jenkins instance
+    def jenkins = Jenkins.instance
+//get job Item
+    def item = jenkins.getItemByFullName("The_JOB_NAME")
+    println item
+// get workspacePath for the job Item
+    def workspacePath = jenkins.getWorkspaceFor (item)
+    println workspacePath
+
+    def file = new File(workspacePath.toString()+"\\myjob.xml")
+
+
+} catch (Exception ex){
+    println ex.message
+}
+
+
 return "PATH IS "+sourceUri.toString()
 
 }
@@ -24,7 +47,7 @@ return "PATH IS "+sourceUri.toString()
 static void doJob(){
 
 
-def version = readFile "\\myjob.xml"
+def version = readFile "myjob.xml"
 
 @SourceURI
 URI sourceUri
