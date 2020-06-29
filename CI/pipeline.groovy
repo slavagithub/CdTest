@@ -5,6 +5,8 @@ import java.util.Map
 import jenkins.*
 import hudson.*
 import hudson.model.*   
+import jenkins.model.Jenkins
+import com.cloudbees.hudson.plugins.folder.*
 
 static void doit(String[] args) {
 //    Example.sum(5, 8)
