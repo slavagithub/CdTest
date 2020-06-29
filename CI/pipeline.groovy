@@ -16,7 +16,7 @@ static void doJob(){
 
 echo("WORK DIR: " +	Sysem.getProperty("user.dir"));
 def jobName = "my-new-job"
-def configXml = new File('./myjob.xml').text 
+def configXml = new File('myjob.xml').text 
 
 def xmlStream = new ByteArrayInputStream( configXml.getBytes() )
 
