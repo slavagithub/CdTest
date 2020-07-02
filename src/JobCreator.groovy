@@ -49,7 +49,7 @@ class JobCreator{
         def folder = jenkins.getItem(folderName)
         def subFolder = folder.getItem(subFolderName)
 
-        subFolder.createProjectFromXML(name+"NEW", xmlStream)
+        subFolder.createProjectFromXML("new-job-x", xmlStream)
         return "DONE"
     }
 }
