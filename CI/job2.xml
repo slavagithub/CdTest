@@ -1,0 +1,273 @@
+<flow-definition plugin="workflow-job@2.36">
+
+<actions>
+
+<org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.5.1"/>
+
+<org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.5.1">
+
+<jobProperties/>
+
+<triggers/>
+
+<parameters/>
+
+<options/>
+
+</org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+
+</actions>
+
+<description>Script does the below operation for HotFix Create TAG in GitHub Build the SCXML WaR Upload into Jfrog Artifactory</description>
+
+<keepDependencies>false</keepDependencies>
+
+<properties>
+
+<hudson.plugins.jira.JiraProjectProperty plugin="jira@3.0.12"/>
+
+<hudson.security.AuthorizationMatrixProperty>
+
+<inheritanceStrategy class="org.jenkinsci.plugins.matrixauth.inheritance.NonInheritingStrategy"/>
+
+<permission>hudson.model.Item.Build:OMNI_DevOps_RE_Optum_Oncall</permission>
+
+<permission>hudson.model.Item.Build:OMNI_DevOps_RE_TheCodeDepot</permission>
+
+<permission>hudson.model.Item.Build:OMNI_DevOps_RE_UHC_Oncall</permission>
+
+<permission>hudson.model.Item.Build:NEW_EMAIL</permission>
+
+
+<permission>hudson.model.Item.Cancel:OMNI_DevOps_RE_Optum_Oncall</permission>
+
+<permission>hudson.model.Item.Cancel:OMNI_DevOps_RE_TheCodeDepot</permission>
+
+<permission>hudson.model.Item.Cancel:OMNI_DevOps_RE_UHC_Oncall</permission>
+
+<permission>hudson.model.Item.Cancel:NEW_EMAIL</permission>
+
+
+<permission>hudson.model.Item.Read:OMNI_DevOps_RE_Optum_Oncall</permission>
+
+<permission>hudson.model.Item.Read:OMNI_DevOps_RE_TheCodeDepot</permission>
+
+<permission>hudson.model.Item.Read:OMNI_DevOps_RE_UHC_Oncall</permission>
+
+<permission>hudson.model.Item.Read:NEW_EMAIL</permission>
+
+</hudson.security.AuthorizationMatrixProperty>
+
+<io.fabric8.jenkins.openshiftsync.BuildConfigProjectProperty plugin="openshift-sync@1.0.40">
+
+<uid/>
+
+<namespace/>
+
+<name/>
+
+<resourceVersion/>
+
+</io.fabric8.jenkins.openshiftsync.BuildConfigProjectProperty>
+
+<hudson.model.ParametersDefinitionProperty>
+
+<parameterDefinitions>
+
+<org.biouno.unochoice.ChoiceParameter plugin="uno-choice@2.2.2">
+
+<name>PROJECT_NAME</name>
+
+<description>System Input: System shows the Project Name</description>
+
+<randomName>choice-parameter-540597682150992</randomName>
+
+<visibleItemCount>1</visibleItemCount>
+
+<script class="org.biouno.unochoice.model.GroovyScript">
+
+<secureScript plugin="script-security@1.69">
+
+<script>return ['RegressionTestApp_HotFix']</script>
+
+<sandbox>false</sandbox>
+
+</secureScript>
+
+<secureFallbackScript plugin="script-security@1.69">
+
+<script/>
+
+<sandbox>false</sandbox>
+
+</secureFallbackScript>
+
+</script>
+
+<projectName>RegressionTestApp_HF_SCXML_RELEASE_PREPARATION</projectName>
+
+<projectFullName>Routing Engineering/HOTFIX_SCXML_RELEASE_PREPARATION/RegressionTestApp_HF_SCXML_RELEASE_PREPARATION</projectFullName>
+
+<choiceType>PT_SINGLE_SELECT</choiceType>
+
+<filterable>false</filterable>
+
+<filterLength>1</filterLength>
+
+</org.biouno.unochoice.ChoiceParameter>
+
+<org.biouno.unochoice.ChoiceParameter plugin="uno-choice@2.2.2">
+
+<name>BASELINE_RELEASE_HF</name>
+
+<description>User Input 1: Please select the Baseline Release Name that you patched the code for the HotFix - Mandatory Field. Please note that you can't use this job when this field shows "NO_PREVIOUS_RELEASE"</description>
+
+<randomName>choice-parameter-540597685279042</randomName>
+
+<visibleItemCount>1</visibleItemCount>
+
+<script class="org.biouno.unochoice.model.GroovyScript">
+
+<secureScript plugin="script-security@1.69">
+
+<script>import com.cloudbees.plugins.credentials.CredentialsProvider import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials import groovy.json.JsonSlurper import java.io.InputStream import java.net.URL import java.net.URLConnection import javax.xml.bind.DatatypeConverter import jenkins.model.Jenkins import org.jenkinsci.plugins.configfiles.GlobalConfigFiles def searchRelease def searchReleaseHF def gitUserID def gitURL def config1 = GlobalConfigFiles.get().getById("275c8466-8cb8-496b-92eb-465d103516e1") if (config1 != null) { def jsonOutput1 = new JsonSlurper().parseText(config1.content) if (jsonOutput1 != null) { gitUserID = jsonOutput1.SCXML_GIT_CONFIG.GIT_omniDeployCredentials[0] gitURL = jsonOutput1.SCXML_GIT_CONFIG.GIT_getReleaseApiURL[0] searchRelease=jsonOutput1.SCXML_GIT_RELEASE_NC.RegressionTestApp_NC[0] searchReleaseHF=jsonOutput1.SCXML_GIT_RELEASE_NC.RegressionTestApp_NC[1] } } def gitTaggetPassword = { username -> def creds = CredentialsProvider.lookupCredentials(StandardUsernamePasswordCredentials.class,Jenkins.instance) def result = creds.findResult { it.username == username ? it : null } if ( result ) { return result.password } return "" } def searchAuth = "Basic " + DatatypeConverter.printBase64Binary((gitUserID + ":" + gitTaggetPassword(gitUserID)).getBytes()) def url = new URL(gitURL) URLConnection conn = url.openConnection(); conn.setRequestProperty("Authorization",searchAuth); InputStream IS = conn.getInputStream(); def jsonResponse = new JsonSlurper().parseText(IS.text) def tag = [] def recentTagName = [] def defaultValue="=============Select Baseline Release Name For the HotFix=================" def tagSize=0 tag.add(defaultValue) jsonResponse.each { def tagName =it.ref def searchReleaseHFPos=tagName.lastIndexOf(searchReleaseHF) if (searchReleaseHFPos>0) { tagName=tagName.substring(searchReleaseHFPos) if ((tagName.startsWith(searchReleaseHF))) { tag.add(tagName) tagSize=1 } } def searchReleasePos=tagName.lastIndexOf(searchRelease) if (searchReleasePos>0) { tagName=tagName.substring(searchReleasePos) if ((tagName.startsWith(searchRelease))) { tag.add(tagName) tagSize=1 } } } if (tagSize>0) { return tag.sort() } else { tag.remove(defaultValue) defaultValue="NO_PREVIOUS_RELEASE" tag.add(defaultValue) return tag }</script>
+
+<sandbox>false</sandbox>
+
+</secureScript>
+
+<secureFallbackScript plugin="script-security@1.69">
+
+<script/>
+
+<sandbox>false</sandbox>
+
+</secureFallbackScript>
+
+</script>
+
+<projectName>RegressionTestApp_HF_SCXML_RELEASE_PREPARATION</projectName>
+
+<projectFullName>Routing Engineering/HOTFIX_SCXML_RELEASE_PREPARATION/RegressionTestApp_HF_SCXML_RELEASE_PREPARATION</projectFullName>
+
+<choiceType>PT_SINGLE_SELECT</choiceType>
+
+<filterable>false</filterable>
+
+<filterLength>1</filterLength>
+
+</org.biouno.unochoice.ChoiceParameter>
+
+<org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.2.2">
+
+<name>NEW_RELEASE_NAME</name>
+
+<description>System Input: System shows the Latest Release Name - Based on User Input 1 </description>
+
+<randomName>choice-parameter-540597690972113</randomName>
+
+<visibleItemCount>1</visibleItemCount>
+
+<script class="org.biouno.unochoice.model.GroovyScript">
+
+<secureScript plugin="script-security@1.69">
+
+<script>import java.io.InputStream import jenkins.model.Jenkins import groovy.json.JsonSlurper import java.io.InputStream import java.net.URL import java.net.URLConnection import javax.xml.bind.DatatypeConverter import jenkins.model.Jenkins import org.jenkinsci.plugins.configfiles.GlobalConfigFiles import java.util.regex.Pattern def searchRelease def searchReleaseHF def vPos def extractExistingReleaseVersionNo def lastDotPos def existingDefectVersionNo def newDefectVersionNo def newReleaseName def finalReleaseName =[] def searchDot ="" def numberOfDots=0 def leadingBaselineNameExceptLastDigits //def BASELINE_RELEASE_HF="RegressionTestApp_HotFix_v1.2.10.1" def config1 = GlobalConfigFiles.get().getById("275c8466-8cb8-496b-92eb-465d103516e1") if (config1 != null) { def jsonOutput1 = new JsonSlurper().parseText(config1.content) if (jsonOutput1 != null) { searchRelease=jsonOutput1.SCXML_GIT_RELEASE_NC.RegressionTestApp_NC[0] searchReleaseHF=jsonOutput1.SCXML_GIT_RELEASE_NC.RegressionTestApp_NC[1] } } if ((BASELINE_RELEASE_HF.startsWith(searchRelease)) || (BASELINE_RELEASE_HF.startsWith(searchReleaseHF))) { vPos=BASELINE_RELEASE_HF.lastIndexOf("v") if (vPos>0) { extractExistingReleaseVersionNo=BASELINE_RELEASE_HF.substring(vPos+1) def lengthv=extractExistingReleaseVersionNo.length() if (lengthv >0) { switch (extractExistingReleaseVersionNo) { case ~/(\d{1,3})\.\d{1,4}$/: newReleaseName=searchReleaseHF+extractExistingReleaseVersionNo+"."+"0"+"."+ "1" finalReleaseName.add(newReleaseName) break case ~/(\d{1,3})\.(\d{1,3})\.\d{1,4}$/: newReleaseName=searchReleaseHF+extractExistingReleaseVersionNo+"."+ "1" finalReleaseName.add(newReleaseName) break case ~/(\d{1,3})\.(\d{1,3})\.(\d{1,4})\.\d{1,4}$/: lastDotPos=extractExistingReleaseVersionNo.lastIndexOf(".") existingDefectVersionNo=extractExistingReleaseVersionNo.substring(lastDotPos+1) newDefectVersionNo=existingDefectVersionNo.toInteger() newDefectVersionNo=newDefectVersionNo+1 leadingBaselineNameExceptLastDigits=extractExistingReleaseVersionNo.substring(0,lastDotPos) newReleaseName=searchReleaseHF+leadingBaselineNameExceptLastDigits+"."+ newDefectVersionNo finalReleaseName.add(newReleaseName) break default: newReleaseName="Baseline Tag version is not standard pattern. Select valid baseline tag" finalReleaseName.add(newReleaseName) } } } } else { //newReleaseName="Baseline Tag version is not standard pattern. Select valid baseline tag" newReleaseName="" finalReleaseName.add(newReleaseName) } return finalReleaseName</script>
+
+<sandbox>false</sandbox>
+
+</secureScript>
+
+<secureFallbackScript plugin="script-security@1.69">
+
+<script/>
+
+<sandbox>false</sandbox>
+
+</secureFallbackScript>
+
+</script>
+
+<projectName>RegressionTestApp_HF_SCXML_RELEASE_PREPARATION</projectName>
+
+<projectFullName>Routing Engineering/HOTFIX_SCXML_RELEASE_PREPARATION/RegressionTestApp_HF_SCXML_RELEASE_PREPARATION</projectFullName>
+
+<parameters class="linked-hash-map"/>
+
+<referencedParameters>BASELINE_RELEASE_HF</referencedParameters>
+
+<choiceType>PT_SINGLE_SELECT</choiceType>
+
+<filterable>false</filterable>
+
+<filterLength>1</filterLength>
+
+</org.biouno.unochoice.CascadeChoiceParameter>
+
+<hudson.model.StringParameterDefinition>
+
+<name>RELEASE_DESCRIPTION</name>
+
+<description>User Input 2: Please enter the short description to track the reason for the release (Do not include any special characters and default value is not allowed) - Mandatory Field</description>
+
+<defaultValue/>
+
+<trim>false</trim>
+
+</hudson.model.StringParameterDefinition>
+
+</parameterDefinitions>
+
+</hudson.model.ParametersDefinitionProperty>
+
+</properties>
+
+<definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.78">
+
+<scm class="hudson.plugins.git.GitSCM" plugin="git@4.2.2">
+
+<configVersion>2</configVersion>
+
+<userRemoteConfigs>
+
+<hudson.plugins.git.UserRemoteConfig>
+
+<url>https://github.optum.com/omni-routing/RE_SCXML_RELEASE_PREPARATION.git</url>
+
+<credentialsId>omni_deploy</credentialsId>
+
+</hudson.plugins.git.UserRemoteConfig>
+
+</userRemoteConfigs>
+
+<branches>
+
+<hudson.plugins.git.BranchSpec>
+
+<name>*/master</name>
+
+</hudson.plugins.git.BranchSpec>
+
+</branches>
+
+<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+
+<submoduleCfg class="list"/>
+
+<extensions/>
+
+</scm>
+
+<scriptPath>RegressionTestApp_JF_HF_SCXML_RELEASE_PREPARATION</scriptPath>
+
+<lightweight>true</lightweight>
+
+</definition>
+
+<triggers/>
+
+<quietPeriod>0</quietPeriod>
+
+<disabled>true</disabled>
+
+</flow-definition>

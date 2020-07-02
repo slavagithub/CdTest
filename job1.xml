@@ -1,0 +1,985 @@
+<?xml version='1.1' encoding='UTF-8'?>
+
+<flow-definition plugin="workflow-job@2.36">
+
+  <actions>
+
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.5.1"/>
+
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.5.1">
+
+      <jobProperties/>
+
+      <triggers/>
+
+      <parameters/>
+
+      <options/>
+
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+
+  </actions>
+
+  <description>1. Client Side does the below operation:&#xd;
+
+&#xd;
+
+    Lists the Rule package Name&#xd;
+
+    Lists the Released version &#xd;
+
+    Lists the GRE Nodes&#xd;
+
+    Display Release Description (if available)&#xd;
+
+&#xd;
+
+2. Server Script does the below operation:&#xd;
+
+&#xd;
+
+   Retrieve the released binary source code from  Jfrog and prepare for the build&#xd;
+
+   Import the package into GRAT &#xd;
+
+   Deploy the rule package into QA GRE&#xd;
+
+   Clean up&#xd;
+
+   Notification Mail</description>
+
+  <keepDependencies>false</keepDependencies>
+
+  <properties>
+
+    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.0.12"/>
+
+    <hudson.security.AuthorizationMatrixProperty>
+
+      <inheritanceStrategy class="org.jenkinsci.plugins.matrixauth.inheritance.NonInheritingStrategy"/>
+
+      <permission>hudson.model.Item.Build:OMNI_DevOps_RE_Optum_Oncall</permission>
+
+      <permission>hudson.model.Item.Build:OMNI_DevOps_RE_TestApp</permission>
+
+      <permission>hudson.model.Item.Build:OMNI_DevOps_RE_TheCodeDepot</permission>
+
+      <permission>hudson.model.Item.Build:OMNI_DevOps_RE_UHC_Oncall</permission>
+
+      <permission>hudson.model.Item.Cancel:OMNI_DevOps_RE_Optum_Oncall</permission>
+
+      <permission>hudson.model.Item.Cancel:OMNI_DevOps_RE_TestApp</permission>
+
+      <permission>hudson.model.Item.Cancel:OMNI_DevOps_RE_TheCodeDepot</permission>
+
+      <permission>hudson.model.Item.Cancel:OMNI_DevOps_RE_UHC_Oncall</permission>
+
+      <permission>hudson.model.Item.Read:OMNI_DevOps_RE_Optum_Oncall</permission>
+
+      <permission>hudson.model.Item.Read:OMNI_DevOps_RE_TestApp</permission>
+
+      <permission>hudson.model.Item.Read:OMNI_DevOps_RE_TheCodeDepot</permission>
+
+      <permission>hudson.model.Item.Read:OMNI_DevOps_RE_UHC_Oncall</permission>
+
+    </hudson.security.AuthorizationMatrixProperty>
+
+    <io.fabric8.jenkins.openshiftsync.BuildConfigProjectProperty plugin="openshift-sync@1.0.40">
+
+      <uid></uid>
+
+      <namespace></namespace>
+
+      <name></name>
+
+      <resourceVersion></resourceVersion>
+
+    </io.fabric8.jenkins.openshiftsync.BuildConfigProjectProperty>
+
+    <jenkins.model.BuildDiscarderProperty>
+
+      <strategy class="hudson.tasks.LogRotator">
+
+        <daysToKeep>-1</daysToKeep>
+
+        <numToKeep>5</numToKeep>
+
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+
+        <artifactNumToKeep>-1</artifactNumToKeep>
+
+      </strategy>
+
+    </jenkins.model.BuildDiscarderProperty>
+
+    <hudson.model.ParametersDefinitionProperty>
+
+      <parameterDefinitions>
+
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@2.2.2">
+
+          <name>RULE_PACKAGE_NAME</name>
+
+          <description>User Input 1 [Mandatory] : Please select the rule package name to display existing released package</description>
+
+          <randomName>choice-parameter-12634989278685616</randomName>
+
+          <visibleItemCount>1</visibleItemCount>
+
+          <script class="org.biouno.unochoice.model.GroovyScript">
+
+            <secureScript plugin="script-security@1.69">
+
+              <script>import org.jenkinsci.plugins.configfiles.GlobalConfigFiles
+
+import groovy.json.JsonSlurper
+
+def ruleNameLists = []
+
+ruleNameLists.add(&quot;Select Rule Package Name to display the Release Name&quot;)
+
+def config = GlobalConfigFiles.get().getById(&quot;15df2425-2970-400f-9bd7-5e859e6bc2fe&quot;)
+
+ 
+
+if (config != null) {
+
+    def jsonOutput = new JsonSlurper().parseText(config.content)
+
+    if (jsonOutput != null) {
+
+      
+
+                   for (int i = 0; i &lt; jsonOutput.RULES_PACKAGE_LIST.RegressionTestApp_Rules_PackageName.size(); i++)
+
+                                {
+
+                                               
+
+                                                def ruleName = jsonOutput.RULES_PACKAGE_LIST.RegressionTestApp_Rules_PackageName[i]
+
+                                                ruleNameLists.add(ruleName)
+
+                                                                                                                                               
+
+                                }
+
+                                for (int i = 0; i &lt; jsonOutput.RULES_PACKAGE_LIST_HF.RegressionTestApp_Rules_PackageName.size(); i++)
+
+                                {
+
+                                               
+
+                                                def ruleName = jsonOutput.RULES_PACKAGE_LIST_HF.RegressionTestApp_Rules_PackageName[i]
+
+                                                ruleNameLists.add(ruleName)
+
+                                                                                                                                               
+
+                                }
+
+    }
+
+}
+
+return ruleNameLists.sort()</script>
+
+              <sandbox>false</sandbox>
+
+            </secureScript>
+
+            <secureFallbackScript plugin="script-security@1.69">
+
+              <script></script>
+
+              <sandbox>false</sandbox>
+
+            </secureFallbackScript>
+
+          </script>
+
+          <projectName>RegressionTestApp_QA_RULE_DEPLOY</projectName>
+
+          <projectFullName>Routing Engineering/QA_RULE_DEPLOY/RegressionTestApp_QA_RULE_DEPLOY</projectFullName>
+
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+
+          <filterable>true</filterable>
+
+          <filterLength>1</filterLength>
+
+        </org.biouno.unochoice.ChoiceParameter>
+
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.2.2">
+
+          <name>RELEASE_NAME</name>
+
+          <description>User Input 2 [Mandatory] :Please select the release name to deploy the changes into QA environment</description>
+
+          <randomName>choice-parameter-13176010751299098</randomName>
+
+          <visibleItemCount>1</visibleItemCount>
+
+          <script class="org.biouno.unochoice.model.GroovyScript">
+
+            <secureScript plugin="script-security@1.69">
+
+              <script>import org.jenkinsci.plugins.configfiles.GlobalConfigFiles
+
+import com.cloudbees.plugins.credentials.CredentialsProvider
+
+import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials
+
+import groovy.json.JsonSlurper
+
+import java.io.InputStream
+
+import java.net.URL
+
+import java.net.URLConnection
+
+import javax.xml.bind.DatatypeConverter
+
+import jenkins.model.Jenkins
+
+ 
+
+def artifactoryUserID
+
+def GRS_searchArtifactoryBaseURL
+
+def GRS_searchArtifactorySnapshotBasePath
+
+def GRS_artifactoryVirtualPath
+
+def searchArtifcatoryFileExtension=&quot;/*.zip&quot;
+
+def artifactoryURL
+
+def lastUnderScorePos
+
+def lastUnderScorePos1
+
+def artifact = []
+
+def searchPackageName
+
+def underscorePackageName
+
+def rulPackageType
+
+searchPackageName = RULE_PACKAGE_NAME
+
+ 
+
+ 
+
+if ((&quot;${RULE_PACKAGE_NAME}&quot;.endsWith(&quot;.hotfix&quot;)))
+
+{
+
+                underscorePackageName = searchPackageName.replace (&quot;.&quot;,&quot;_&quot;)            
+
+                lastUnderScorePos=underscorePackageName.lastIndexOf(&quot;_hotfix&quot;)
+
+                if (lastUnderScorePos&gt;0)
+
+                {
+
+                                underscorePackageName=underscorePackageName.substring(0,lastUnderScorePos)
+
+                                rulPackageType=&quot;HotFix&quot;
+
+                }
+
+                else
+
+                {
+
+                                artifact.add(&quot;-----Problem with Retrieval of Release Name-----&quot;)
+
+                                return artifact.sort()
+
+                }
+
+               
+
+                                                                                  
+
+}
+
+else if ((&quot;${RULE_PACKAGE_NAME}&quot;.endsWith(&quot;.rt&quot;)))
+
+{
+
+                underscorePackageName=searchPackageName.replace (&quot;.&quot;,&quot;_&quot;)
+
+                rulPackageType=&quot;Normal&quot;
+
+}
+
+else
+
+{
+
+                return &quot;&quot;
+
+}
+
+ 
+
+def config1 = GlobalConfigFiles.get().getById(&quot;e87b8ccb-d30e-4b2c-9018-2d759c4383a7&quot;)
+
+ 
+
+ 
+
+if (config1 != null) {
+
+    def jsonOutput1 = new JsonSlurper().parseText(config1.content)
+
+    if (jsonOutput1 != null) {
+
+      
+
+                   
+
+                                                GRS_searchArtifactoryBaseURL = jsonOutput1.RULES_JFROG_CONFIG.GRS_searchArtifactoryBaseURL[0]
+
+                                                GRS_searchArtifactorySnapshotBasePath = jsonOutput1.RULES_JFROG_CONFIG.GRS_searchArtifactorySnapshotBasePath[0]
+
+                                                GRS_artifactoryVirtualPath = jsonOutput1.RULES_JFROG_CONFIG.GRS_artifactoryVirtualPath[0]                          
+
+                                artifactoryURL=GRS_searchArtifactoryBaseURL+GRS_searchArtifactorySnapshotBasePath+GRS_artifactoryVirtualPath+underscorePackageName+searchArtifcatoryFileExtension
+
+                                                artifactoryUserID = jsonOutput1.RULES_JFROG_CONFIG.GRS_artifactoryUserID[0]
+
+                                                                                                                                               
+
+                               
+
+    }
+
+}
+
+ 
+
+ 
+
+def artifactorygetPassword = { username -&gt;
+
+    def creds = CredentialsProvider.lookupCredentials(StandardUsernamePasswordCredentials.class,Jenkins.instance)
+
+    def result = creds.findResult { it.username == username ? it : null }
+
+ 
+
+    if ( result ) {
+
+        return result.password
+
+    }
+
+    return &quot;&quot;
+
+}
+
+ 
+
+def searchAuth = &quot;Basic &quot; + DatatypeConverter.printBase64Binary((artifactoryUserID + &quot;:&quot; + artifactorygetPassword(artifactoryUserID)).getBytes())
+
+ 
+
+def url = new URL(artifactoryURL)
+
+URLConnection conn = url.openConnection();
+
+conn.setRequestProperty(&quot;Authorization&quot;,searchAuth);
+
+InputStream IS = conn.getInputStream();
+
+def jsonResponse = new JsonSlurper().parseText(IS.text)
+
+ 
+
+ 
+
+artifact.add(&quot;-----Select Release Name for QA Deployment-----&quot;)
+
+ 
+
+jsonResponse.files.each {
+
+ 
+
+                                                   def artifcatWarFiles = it.split(&quot;/&quot;)
+
+                                                   def artifcatWarFileName=artifcatWarFiles[artifcatWarFiles.length-1]
+
+                                                   def artifcatWarFileNameLength=artifcatWarFileName.length()
+
+                                                   def artifactSourceName=artifcatWarFileName.substring(0,artifcatWarFileNameLength-4)
+
+                                                   if (rulPackageType.equalsIgnoreCase(&quot;Normal&quot;))
+
+                                                   {
+
+                                                                                lastUnderScorePos1=0
+
+                                                                                lastUnderScorePos1=artifactSourceName.lastIndexOf(&quot;_hotfix&quot;)
+
+                                                                                if (lastUnderScorePos1&gt;0)
+
+                                                                                {
+
+                                                                                                // do not add hotfix release for normal rule type
+
+                                                                                }
+
+                                                                                else
+
+                                                                                {
+
+                                                                                                artifact.add(artifactSourceName)
+
+                                                                                }
+
+                                                   }
+
+                                                   else
+
+                                                   {
+
+                                                                                lastUnderScorePos1=0
+
+                                                                                lastUnderScorePos1=artifactSourceName.lastIndexOf(&quot;_hotfix&quot;)
+
+                                                                                if (lastUnderScorePos1&gt;0)
+
+                                                                                {
+
+                                                                                                artifact.add(artifactSourceName)
+
+                                                                                }
+
+                                                                                else
+
+                                                                                {
+
+                                                                                                // do not add normal release for hotfix rule type
+
+                                                                                }
+
+                                                   }
+
+}
+
+ 
+
+return artifact.sort()</script>
+
+              <sandbox>false</sandbox>
+
+            </secureScript>
+
+            <secureFallbackScript plugin="script-security@1.69">
+
+              <script></script>
+
+              <sandbox>false</sandbox>
+
+            </secureFallbackScript>
+
+          </script>
+
+          <projectName>RegressionTestApp_QA_RULE_DEPLOY</projectName>
+
+          <projectFullName>Routing Engineering/QA_RULE_DEPLOY/RegressionTestApp_QA_RULE_DEPLOY</projectFullName>
+
+          <parameters class="linked-hash-map"/>
+
+          <referencedParameters>RULE_PACKAGE_NAME</referencedParameters>
+
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+
+          <filterable>true</filterable>
+
+          <filterLength>1</filterLength>
+
+        </org.biouno.unochoice.CascadeChoiceParameter>
+
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@2.2.2">
+
+          <name>GRE_DEPLOY_SERVERS</name>
+
+          <description>User Input 3 [Optional] :By default, it will deploy to all the above servers if you do not select it</description>
+
+          <randomName>choice-parameter-2741681184931215</randomName>
+
+          <visibleItemCount>1</visibleItemCount>
+
+          <script class="org.biouno.unochoice.model.GroovyScript">
+
+            <secureScript plugin="script-security@1.69">
+
+              <script>import org.jenkinsci.plugins.configfiles.GlobalConfigFiles
+
+import groovy.json.JsonSlurper
+
+def serverNameLists = []
+
+ 
+
+def config = GlobalConfigFiles.get().getById(&quot;f1ab1b39-b9f1-4772-9a58-bfadb8397900&quot;)
+
+ 
+
+if (config != null) {
+
+    def jsonOutput = new JsonSlurper().parseText(config.content)
+
+    if (jsonOutput != null) {
+
+      
+
+                   for (int i = 0; i &lt; jsonOutput.QA_DEPLOY_GRS_LIST.RegressionTestApp_GRS_APP_Servers.size(); i++)
+
+                                {
+
+                                               
+
+                                                def serverName = jsonOutput.QA_DEPLOY_GRS_LIST.RegressionTestApp_GRS_APP_Servers[i]
+
+                                                serverName=serverName+&quot;:selected&quot;
+
+                                                serverNameLists.add(serverName)
+
+                                                                                                                                               
+
+                                }
+
+    }
+
+}
+
+return serverNameLists.sort()</script>
+
+              <sandbox>false</sandbox>
+
+            </secureScript>
+
+            <secureFallbackScript plugin="script-security@1.69">
+
+              <script></script>
+
+              <sandbox>false</sandbox>
+
+            </secureFallbackScript>
+
+          </script>
+
+          <projectName>RegressionTestApp_QA_RULE_DEPLOY</projectName>
+
+          <projectFullName>Routing Engineering/QA_RULE_DEPLOY/RegressionTestApp_QA_RULE_DEPLOY</projectFullName>
+
+          <choiceType>PT_CHECKBOX</choiceType>
+
+          <filterable>true</filterable>
+
+          <filterLength>1</filterLength>
+
+        </org.biouno.unochoice.ChoiceParameter>
+
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.2.2">
+
+          <name>RELEASE_DESCRIPTION</name>
+
+          <description>&lt;h3&gt;System Input: System shows release description - Based on User Input 1&amp; 2. No input is required from the user for this field even though this field shows blank &lt;/h3&gt;</description>
+
+          <randomName>choice-parameter-2980721774693820</randomName>
+
+          <visibleItemCount>1</visibleItemCount>
+
+          <script class="org.biouno.unochoice.model.GroovyScript">
+
+            <secureScript plugin="script-security@1.69">
+
+              <script>import com.cloudbees.plugins.credentials.CredentialsProvider
+
+import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials
+
+import groovy.json.JsonSlurper
+
+import java.io.InputStream
+
+import java.net.URL
+
+import java.net.URLConnection
+
+import javax.xml.bind.DatatypeConverter
+
+import jenkins.model.Jenkins
+
+import org.jenkinsci.plugins.configfiles.GlobalConfigFiles
+
+def underscorePackageName
+
+def gitUserID
+
+def gitReleaseApiPrefix
+
+def gitReleaseApiSuffix
+
+def gitURL
+
+def defaultValue=&quot;&quot;
+
+def recentTagName = []
+
+def tagSha
+
+def tagMessage
+
+def tagName
+
+def tagSize
+
+def tempUnderscorePackageName
+
+def config1 = GlobalConfigFiles.get().getById(&quot;e87b8ccb-d30e-4b2c-9018-2d759c4383a7&quot;)
+
+def lastUnderScorePos
+
+def searchPackageName
+
+searchPackageName = RULE_PACKAGE_NAME
+
+underscorePackageName =searchPackageName.replace (&quot;.&quot;,&quot;_&quot;)
+
+ 
+
+if ( (!(&quot;${RELEASE_NAME}&quot;.startsWith(underscorePackageName))))
+
+{
+
+                defaultValue=&quot;&quot;
+
+                tagSize=0
+
+                recentTagName.add(defaultValue)
+
+}
+
+else
+
+{                             
+
+                lastUnderScorePos=underscorePackageName.lastIndexOf(&quot;_hotfix&quot;)
+
+                if (lastUnderScorePos&gt;0)
+
+                {
+
+                                underscorePackageName=underscorePackageName.substring(0,lastUnderScorePos)
+
+                }
+
+                               
+
+                if (config1 != null)
+
+                {
+
+                                def jsonOutput1 = new JsonSlurper().parseText(config1.content)
+
+                                if (jsonOutput1 != null)
+
+                                {                                             
+
+                                                gitUserID = jsonOutput1.RULES_GIT_CONFIG.GRS_omniDeployCredentials[0]
+
+                                                gitReleaseApiPrefix=jsonOutput1.RULES_GIT_CONFIG.GRS_gitReleaseApiPrefix[0]
+
+                                                gitReleaseApiSuffix=jsonOutput1.RULES_GIT_CONFIG.GRS_gitReleaseApiSuffix[0]
+
+                                                gitURL = gitReleaseApiPrefix + underscorePackageName +             gitReleaseApiSuffix         + RELEASE_NAME                                               
+
+                                }
+
+                }
+
+                                               
+
+                def gitTaggetPassword =
+
+                { username -&gt;
+
+                                def creds = CredentialsProvider.lookupCredentials(StandardUsernamePasswordCredentials.class,Jenkins.instance)
+
+                                def result = creds.findResult { it.username == username ? it : null }
+
+ 
+
+                                if ( result )
+
+                                {
+
+                                                return result.password
+
+                                }
+
+                                return &quot;&quot;
+
+                }
+
+ 
+
+                def searchAuth = &quot;Basic &quot; + DatatypeConverter.printBase64Binary((gitUserID + &quot;:&quot; + gitTaggetPassword(gitUserID)).getBytes())
+
+                try
+
+                {
+
+                                def url = new URL(gitURL)
+
+                                URLConnection conn = url.openConnection();
+
+                                conn.setRequestProperty(&quot;Authorization&quot;,searchAuth);
+
+                                InputStream IS = conn.getInputStream();
+
+                                def jsonResponse = new JsonSlurper().parseText(IS.text)
+
+                                tagName=jsonResponse.ref
+
+                                tagSha =jsonResponse.object.sha
+
+                                tagSize=1                            
+
+                               
+
+                }
+
+                catch(FileNotFoundException ex)
+
+                {                                                                                             
+
+                                defaultValue=&quot;&quot;
+
+                                tagSize=0
+
+                                recentTagName.add(defaultValue)
+
+                                                                                                                                               
+
+                }
+
+                if (tagSize&gt;0)
+
+                {
+
+                                def jsonOutput1 = new JsonSlurper().parseText(config1.content)
+
+                                if (jsonOutput1 != null)
+
+                                {                                             
+
+                                                gitReleaseApiSuffix=jsonOutput1.RULES_GIT_CONFIG.GRS_gitReleaseMessageApiSuffix[0]
+
+                                                gitURL = gitReleaseApiPrefix + underscorePackageName +             gitReleaseApiSuffix         + tagSha
+
+                                }
+
+                                               
+
+                                def gitTaggetPassword1 =
+
+                                { username -&gt;
+
+                                                def creds1 = CredentialsProvider.lookupCredentials(StandardUsernamePasswordCredentials.class,Jenkins.instance)
+
+                                                def result1 = creds1.findResult { it.username == username ? it : null }
+
+ 
+
+                                                if ( result1 )
+
+                                                {
+
+                                                                return result1.password
+
+                                                }
+
+                                                return &quot;&quot;
+
+                                }
+
+                                               
+
+                                def searchAuth1 = &quot;Basic &quot; + DatatypeConverter.printBase64Binary((gitUserID + &quot;:&quot; + gitTaggetPassword1(gitUserID)).getBytes())
+
+                                try
+
+                                {
+
+                                                def url = new URL(gitURL)
+
+                                                URLConnection conn1 = url.openConnection();
+
+                                                conn1.setRequestProperty(&quot;Authorization&quot;,searchAuth1);
+
+                                                InputStream IS1 = conn1.getInputStream();
+
+                                                def jsonResponse1 = new JsonSlurper().parseText(IS1.text)
+
+                                                                                               
+
+                                                tagMessage=jsonResponse1.message
+
+                                                tagSize=1
+
+                                                if (tagSize&gt;0)
+
+                                                {
+
+                                                                tagMessage=tagMessage+&quot;:selected&quot;
+
+                                                                recentTagName.add(tagMessage)
+
+                                                }
+
+                                                else
+
+                                                {
+
+                                                                recentTagName.add(defaultValue)
+
+                                                }
+
+ 
+
+                                                                                               
+
+                                }
+
+                                catch(FileNotFoundException ex)
+
+                                {                                                                                                             
+
+                                                defaultValue=&quot;COULD NOT GET RELEASE DESCRIPTION AS TAG NOT CREATED VIA JENKINS&quot;
+
+                                                tagSize=0
+
+                                                recentTagName.add(defaultValue)
+
+                                                                                                                                                               
+
+                                }
+
+                }
+
+                else
+
+                {
+
+                                defaultValue=&quot;&quot;
+
+                                tagSize=0
+
+                                recentTagName.add(defaultValue)                                         
+
+                }
+
+                               
+
+}
+
+ 
+
+return recentTagName</script>
+
+              <sandbox>false</sandbox>
+
+            </secureScript>
+
+            <secureFallbackScript plugin="script-security@1.69">
+
+              <script></script>
+
+              <sandbox>false</sandbox>
+
+            </secureFallbackScript>
+
+          </script>
+
+          <projectName>RegressionTestApp_QA_RULE_DEPLOY</projectName>
+
+          <projectFullName>Routing Engineering/QA_RULE_DEPLOY/RegressionTestApp_QA_RULE_DEPLOY</projectFullName>
+
+          <parameters class="linked-hash-map"/>
+
+          <referencedParameters>RULE_PACKAGE_NAME,RELEASE_NAME</referencedParameters>
+
+          <choiceType>PT_RADIO</choiceType>
+
+          <filterable>false</filterable>
+
+          <filterLength>1</filterLength>
+
+        </org.biouno.unochoice.CascadeChoiceParameter>
+
+      </parameterDefinitions>
+
+    </hudson.model.ParametersDefinitionProperty>
+
+  </properties>
+
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.78">
+
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@4.2.2">
+
+      <configVersion>2</configVersion>
+
+      <userRemoteConfigs>
+
+        <hudson.plugins.git.UserRemoteConfig>
+
+          <url>https://github.optum.com/omni-routing/RE_QA_RULE_DEPLOY.git</url>
+
+          <credentialsId>omni_deploy</credentialsId>
+
+        </hudson.plugins.git.UserRemoteConfig>
+
+      </userRemoteConfigs>
+
+      <branches>
+
+        <hudson.plugins.git.BranchSpec>
+
+          <name>*/master</name>
+
+        </hudson.plugins.git.BranchSpec>
+
+      </branches>
+
+      <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+
+      <submoduleCfg class="list"/>
+
+      <extensions/>
+
+    </scm>
+
+    <scriptPath>RegressionTestApp_JF_QA_RULE_DEPLOY</scriptPath>
+
+    <lightweight>true</lightweight>
+
+  </definition>
+
+  <triggers/>
+
+  <quietPeriod>0</quietPeriod>
+
+  <disabled>true</disabled>
+
+</flow-definition>
