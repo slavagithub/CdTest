@@ -42,7 +42,7 @@ class JobCreator{
         def item = jenkins.getItemByFullName("JF")
         def workspacePath = jenkins.getWorkspaceFor (item)
 
-        String content - getNewJobXml(folderName, subFolderName, name, lob, email)
+        String content =tNewJobXml(folderName, subFolderName, name, lob, email)
 
         def xmlStream = new ByteArrayInputStream(content)
 
