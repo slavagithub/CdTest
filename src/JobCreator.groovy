@@ -44,7 +44,7 @@ class JobCreator{
 
         String content = getNewJobXml(folderName, subFolderName, name, lob, email)
 
-        def xmlStream = new ByteArrayInputStream(content)
+        def xmlStream = new ByteArrayInputStream(new ByteArrayInputStream( content.getBytes( 'UTF-16' ) ))
 
         def folder = jenkins.getItem(folderName)
         def subFolder = folder.getItem(subFolderName)
