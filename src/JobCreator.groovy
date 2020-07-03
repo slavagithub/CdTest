@@ -54,7 +54,7 @@ class JobCreator{
         return newName+ " job successfully created"
     }
 
-    static String(){
+    static String getContent(){
         return """<?xml version='1.1' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.39">
   <actions>
