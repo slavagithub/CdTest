@@ -38,12 +38,10 @@ class JobCreator{
     }
     static String addJob(String folderName, String subFolderName, String name, String lob, String email){
         def jenkins = Jenkins.instance
-        def item = jenkins.getItemByFullName("JF")
-        def workspacePath = jenkins.getWorkspaceFor (item)
 
         String content = getNewJobXml(folderName, subFolderName, name, lob, email)
 
-        def xmlStream = new ByteArrayInputStream(content.getBytes( 'UTF-16' ) )
+        def xmlStream = new ByteArrayInputStream(content.getBytes() )
 
         def folder = jenkins.getItem(folderName)
         def subFolder = folder.getItem(subFolderName)
@@ -54,5 +52,5 @@ class JobCreator{
         return newName+ " job successfully created"
     }
 
-  
+
 }
