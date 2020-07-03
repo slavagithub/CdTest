@@ -11,15 +11,14 @@ class JobCreator{
     static String getNewJobXml(String dir, String subDir, String name, String lob, String email){
 
         String content = getJobXml(dir, subDir, name)
-        println replaceFields(content, lob, email)
+        return replaceFields(content, lob, email)
 
-        return "Job successfully created"
     }
     static replaceFields(String content, String lob, String email){
 
         def replacedWithLobName = content.replaceAll("first commit", lob)
         def contentWithEmailSet = replacedWithLobName.replaceAll("README", email)
-        println contentWithEmailSet
+        return contentWithEmailSet
     }
 
     static String getJobXml(String dir, String subDir, String name){
@@ -49,7 +48,9 @@ class JobCreator{
         def folder = jenkins.getItem(folderName)
         def subFolder = folder.getItem(subFolderName)
 
-        subFolder.createProjectFromXML("new-job-x", xmlStream)
-        return "DONE"
+        def newName = name.replaceAll("New", "Existing")
+
+        subFolder.createProjectFromXML(newName, xmlStream)
+        return newName+ " job successfully created"
     }
 }
