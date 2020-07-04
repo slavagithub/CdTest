@@ -43,9 +43,10 @@ class JobCreator{
 
         def xmlStream = new ByteArrayInputStream(content.getBytes() )
 
-        def subFolder = jenkins.getItem(subFolderName)
+        def folder = jenkins.getItem('Routing Engeniering')
+        def subFolder = folder.getItem(subFolderName)
 
-        def newName = name.replaceAll("Inside", "Outside")
+        def newName = name.replaceAll("New", "Existing")
 
         subFolder.createProjectFromXML(newName, xmlStream)
         return newName+ " job successfully created"
