@@ -43,8 +43,8 @@ class JobCreator{
 
         def xmlStream = new ByteArrayInputStream(content.getBytes() )
 
-        def folder = jenkins.getItem("Routing%20Engeniering")
-        def subFolder = folder.getItem(subFolderName)
+//        def folder = jenkins.getItem("Routing%20Engeniering")
+//        def subFolder = folder.getItem(subFolderName)
 
         def newName = name.replaceAll("New", "Existing")
 
