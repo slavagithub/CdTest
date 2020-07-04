@@ -48,7 +48,9 @@ class JobCreator{
 
         def newName = name.replaceAll("New", "Existing")
 
-        subFolder.createProjectFromXML(newName, xmlStream)
+        def target = Jenkins.instance.getItemByFullName('Routing Engeniering/DEV2Deploy')
+
+        target.createProjectFromXML(newName, xmlStream)
         return newName+ " job successfully created"
     }
 
