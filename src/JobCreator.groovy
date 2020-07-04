@@ -22,8 +22,8 @@ class JobCreator{
     }
 
     static String getJobXml(String dir, String subDir, String name){
-        dir = dir.replaceAll(" ", "%20")
-        subDir = subDir.replaceAll(" ", "%20")
+        dir = dir.replaceAll("\u0020", "%20")
+        subDir = subDir.replaceAll("\u0020", "%20")
 
         def username = "Slava"
         def password = "11e110cc052863bb70d5775e14888c2718"
