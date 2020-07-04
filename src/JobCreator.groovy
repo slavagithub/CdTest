@@ -46,7 +46,7 @@ class JobCreator{
 //        def folder = jenkins.getItem("Routing%20Engeniering")
 //        def subFolder = folder.getItem(subFolderName)
 
-        def newName = name.replaceAll("New", "Existing")
+        def newName = name.replaceAll("Inside", "Existing")
 
         def target = Jenkins.instance.getItemByFullName('Routing Engeniering/DEV2Deploy')
 
