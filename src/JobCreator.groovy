@@ -37,18 +37,12 @@ class JobCreator{
         return response.body().string()
     }
     static String addJob(String subFolderName, String name, String lob, String email){
-        def jenkins = Jenkins.instance
-
         String content = getNewJobXml(subFolderName, name, lob, email)
-
         def xmlStream = new ByteArrayInputStream(content.getBytes() )
 
-//        def folder = jenkins.getItem("Routing%20Engeniering")
-//        def subFolder = folder.getItem(subFolderName)
-
         def newName = name.replaceAll("Inside", "Existing")
-
-        def target = Jenkins.instance.getItemByFullName('Routing Engeniering/DEV2Deploy')
+        
+        def target = Jenkins.instance.getItemByFullName('Routing Engeniering/'+subFolderName)
 
         target.createProjectFromXML(newName, xmlStream)
         return newName+ " job successfully created"
