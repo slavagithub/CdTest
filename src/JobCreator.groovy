@@ -46,7 +46,22 @@ class JobCreator{
 
         target.createProjectFromXML(newName, xmlStream)
 
+        enableJob(subFolderName, newName)
+
         return newName+ " job successfully created"
+    }
+
+    static enableJob(String subDir, String name){
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = RequestBody.create(mediaType, "");
+        Request request = new Request.Builder()
+                .url("http://Slava:11e110cc052863bb70d5775e14888c2718@localhost:8080/job/Routing%20Engeniering/job/${subDir}/job/${name}/enabled")
+                .method("POST", body)
+                .addHeader("Cookie", "JSESSIONID.cf4c10c3=node01v2yfqpfc9tyxozsiw21liaau3.node0")
+                .build();
+        Response response = client.newCall(request).execute();
     }
 
 
