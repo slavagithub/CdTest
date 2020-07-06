@@ -1,3 +1,4 @@
+import okhttp3.MediaType
 @Grab(group='com.squareup.okhttp3', module='okhttp', version='4.4.1')
 
 import okhttp3.OkHttpClient
