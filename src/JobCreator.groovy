@@ -44,7 +44,7 @@ class JobCreator{
 
         def target = Jenkins.instance.getItemByFullName('Routing Engeniering/'+subFolderName)
 
-        target.createProjectFromXML(newName, xmlStream).enable()
+        target.getItem(newName).enable()
         return newName+ " job successfully created"
     }
 
