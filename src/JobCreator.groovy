@@ -49,5 +49,12 @@ class JobCreator{
         return newName+ " job successfully created"
     }
 
+    static String getIt(){
+        def buildName = Jenkins.instance.getItemByFullName('Routing Engeniering/'+"DEV2Deploy/JobExisting")
+        buildName.enable()
+        return "Last success: ${buildName.getLastSuccessfulBuild()}"
+    }
+
+
 
 }
