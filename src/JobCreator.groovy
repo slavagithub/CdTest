@@ -41,10 +41,10 @@ class JobCreator{
         def xmlStream = new ByteArrayInputStream(content.getBytes() )
 
         def newName = name.replaceAll("Inside", "Existing")
-        
+
         def target = Jenkins.instance.getItemByFullName('Routing Engeniering/'+subFolderName)
 
-        target.createProjectFromXML(newName, xmlStream)
+        target.createProjectFromXML(newName, xmlStream).enable()
         return newName+ " job successfully created"
     }
 
