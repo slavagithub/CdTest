@@ -46,8 +46,6 @@ class JobCreator{
 
         target.createProjectFromXML(newName, xmlStream)
 
-        target.getItem(newName).enable()
-        
         return newName+ " job successfully created"
     }
 
