@@ -38,18 +38,18 @@ class JobCreator{
         return response.body().string()
     }
     static String addJob(String folderName, String subFolderName, String name, String lob, String email){
-        def jenkins = Jenkins.instance
-        def item = jenkins.getItemByFullName("JF")
-        def workspacePath = jenkins.getWorkspaceFor (item)
-
-        String content =tNewJobXml(folderName, subFolderName, name, lob, email)
-
-        def xmlStream = new ByteArrayInputStream(content)
-
-        def folder = jenkins.getItem(folderName)
-        def subFolder = folder.getItem(subFolderName)
-
-        subFolder.createProjectFromXML(name+"NEW", xmlStream)
+//        def jenkins = Jenkins.instance
+//        def item = jenkins.getItemByFullName("JF")
+//        def workspacePath = jenkins.getWorkspaceFor (item)
+//
+//        String content =tNewJobXml(folderName, subFolderName, name, lob, email)
+//
+//        def xmlStream = new ByteArrayInputStream(content)
+//
+//        def folder = jenkins.getItem(folderName)
+//        def subFolder = folder.getItem(subFolderName)
+//
+//        subFolder.createProjectFromXML(name+"NEW", xmlStream)
         return "DONE"
     }
 }
