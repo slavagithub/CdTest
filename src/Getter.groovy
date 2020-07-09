@@ -1,14 +1,16 @@
 
+@Grab(group='com.squareup.okhttp3', module='okhttp', version='4.4.1')
+
+@Grab('org.ccil.cowan.tagsoup:tagsoup:1.2.1')
+
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
-
-@Grab(group='com.squareup.okhttp3', module='okhttp', version='4.4.1')
 import groovy.xml.XmlSlurper
-@Grab('org.ccil.cowan.tagsoup:tagsoup:1.2.1')
+
 
 import org.ccil.cowan.tagsoup.Parser
 
