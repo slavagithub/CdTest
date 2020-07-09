@@ -1,4 +1,4 @@
-interface ConfigProcessor {
+interface IConfigProcessor {
 
     void setUpdateDetails(UpdateDetails config)
 

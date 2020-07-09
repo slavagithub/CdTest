@@ -1,6 +1,6 @@
 import groovy.json.JsonSlurper
 
-class JsonConfig_Routing_GRS implements ConfigProcessor {
+class JsonIConfig_Routing_GRS implements IConfigProcessor {
     static String fileId = "333"
     static String fileName = "JsonConfig_Routing"
     static String fileComment = "Routing ORS SCXML Job Configuration file - Routing Team"

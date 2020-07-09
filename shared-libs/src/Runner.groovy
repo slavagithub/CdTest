@@ -1,11 +1,9 @@
-import groovy.json.JsonBuilder
-
 @Grab(group='com.squareup.okhttp3', module='okhttp', version='4.4.1')
 
 
 public static void main(String[] args) {
 
-    ConfigFilesManager.addRulesPackages("OmniExpress2",     "oe2.oSSSSSSSSSSrt,oe2.oAAAAAAAAAAices.finverification.hoop.rt")
+    ConfigFilesManager.addRulesPackages("OmniExpress2",     "oe2.555,oe2.oAAAAAAAAAAices.888.hoop.rt")
 
     println "hello"
 
@@ -15,7 +13,7 @@ public static void main(String[] args) {
     details.email = "AGOOD_DL"
     details.copyServersFromLob = "UHCCS"
 
-    ConfigProcessor grs = new JsonConfig_Routing_GRS()
+    IConfigProcessor grs = new JsonIConfig_Routing_GRS()
 //    grs.setContent(new File('C:\\Slava\\repositories\\getter\\data\\JsonConfig_Routing_GRS.json').text)
 
     def configProcessors = [grs]

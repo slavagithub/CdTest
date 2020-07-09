@@ -1,6 +1,6 @@
 import groovy.json.JsonSlurper
 
-class JsonConfig_Routing_RulesList implements ConfigProcessor {
+class JsonIConfig_Routing_RulesList implements IConfigProcessor {
 
     static String fileId = "333"
     static String fileName = "JsonConfig_Routing"
