@@ -3,7 +3,7 @@
 
 public static void main(String[] args) {
 
-    ConfigFilesManager.addRulesPackages("OmniExpress2",     "oe2.555,oe2.oAAAAAAAAAAices.888.hoop.rt")
+    ConfigFilesManager.addRulesPackages("OmniExpress2",     "oe2.333,oe2.111.888.hoop.rt")
 
     println "hello"
 
