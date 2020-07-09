@@ -1,3 +1,4 @@
+import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
 class JsonIConfig_Routing_RulesList implements IConfigProcessor {
@@ -58,7 +59,7 @@ class JsonIConfig_Routing_RulesList implements IConfigProcessor {
     @Override
     void setContent(Object confCont) {
         def jsonSlurper = new JsonSlurper()
-        content = jsonSlurper.parseText(new JsonBuilder(confCont).toPrettyString())
+        content = jsonSlurper.parseText(new JsonBuilder(config).toPrettyString())
     }
 
     @Override
