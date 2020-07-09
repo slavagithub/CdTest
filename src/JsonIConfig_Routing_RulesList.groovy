@@ -8,7 +8,7 @@ class JsonIConfig_Routing_RulesList implements IConfigProcessor {
     static String RP_LIST = "RULES_PACKAGE_LIST"
     static String RP_LIST_HF = "RULES_PACKAGE_LIST_HF"
     static String ALL_PCKG_LIST = "ALL_PACKAGE_LIST"
-    UpdateDetails updateDetails
+    UpdateDetails config
     Boolean isUpdated = false
 
     def content
@@ -41,15 +41,15 @@ class JsonIConfig_Routing_RulesList implements IConfigProcessor {
 
 
     @Override
-    void setUpdateDetails(UpdateDetails config) {
-        updateDetails = config
+    void setUpdateDetails(UpdateDetails inConfig) {
+        config = inConfig
     }
 
     @Override
     void updateContent() {
-        addLobIfAbsent(updateDetails.lob)
-        for(nextRulesPackage in updateDetails.rulesPackages) {
-            addRulesPackage(updateDetails.lob, nextRulesPackage)
+        addLobIfAbsent(config.lob)
+        for(nextRulesPackage in config.rulesPackages) {
+            addRulesPackage(config.lob, nextRulesPackage)
             addAllPackagesList(nextRulesPackage)
         }
         isUpdated = true
