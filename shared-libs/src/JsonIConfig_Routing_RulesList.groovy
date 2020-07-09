@@ -14,7 +14,7 @@ class JsonIConfig_Routing_RulesList implements IConfigProcessor {
     def content
 
     void addLobIfAbsent(String lob) {
-        if (lob.concat("_Rules_PackageName") !in content[RP_LIST]) {
+        if (!(lob.concat("_Rules_PackageName") in content[RP_LIST])) {
             content[RP_LIST].put(lob + "_Rules_PackageName", Eval.me("[]"))
         }
         if (lob.concat("_Rules_PackageName") !in content[RP_LIST_HF]) {
