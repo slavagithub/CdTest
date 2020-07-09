@@ -59,7 +59,7 @@ class JsonIConfig_Routing_RulesList implements IConfigProcessor {
     @Override
     void setContent(Object confCont) {
         def jsonSlurper = new JsonSlurper()
-        parsedJson = jsonSlurper.parseText(new JsonBuilder(confCont).toPrettyString())
+        parsedJson = jsonSlurper.parseText(confCont)
     }
 
     @Override
