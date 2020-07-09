@@ -17,22 +17,22 @@ class JsonIConfig_Routing_RulesList implements IConfigProcessor {
         if (!(lob.concat("_Rules_PackageName") in content[RP_LIST])) {
             content[RP_LIST].put(lob + "_Rules_PackageName", Eval.me("[]"))
         }
-        if (lob.concat("_Rules_PackageName") !in content[RP_LIST_HF]) {
+        if (!(lob.concat("_Rules_PackageName") in content[RP_LIST_HF])) {
             content[RP_LIST_HF].put(lob + "_Rules_PackageName", Eval.me("[]"))
         }
     }
 
     void addRulesPackage(String lob, String pckg) {
-        if (pckg !in content[RP_LIST][lob + "_Rules_PackageName"]) {
+        if (!(pckg in content[RP_LIST][lob + "_Rules_PackageName"])) {
             content[RP_LIST][lob + "_Rules_PackageName"].add(pckg)
         }
-        if (pckg.concat(".hotfix") !in content[RP_LIST_HF][lob + "_Rules_PackageName"]) {
+        if (!(pckg.concat(".hotfix") in content[RP_LIST_HF][lob + "_Rules_PackageName"])) {
             content[RP_LIST_HF][lob + "_Rules_PackageName"].add(pckg + ".hotfix")
         }
     }
 
     void addAllPackagesList(String pckg) {
-        if (pckg !in content[ALL_PCKG_LIST]["Rules_PackageName"]) {
+        if (!(pckg in content[ALL_PCKG_LIST]["Rules_PackageName"])) {
             content[ALL_PCKG_LIST]["Rules_PackageName"].add(pckg)
         }
     }
