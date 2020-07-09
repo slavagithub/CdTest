@@ -75,4 +75,7 @@ class JobCreator{
         subFolder.createProjectFromXML(name+"NEW", xmlStream)
         return "DONE"
     }
+    static String getMessage(){
+        return "HELLO"
+    }
 }
