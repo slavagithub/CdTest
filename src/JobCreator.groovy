@@ -52,6 +52,21 @@ class JobCreator{
         return newName+ " job successfully created"
     }
 
+    static String addJobFromXml(String subFolderName, String name, String lob, String email){
+//        String content = getNewJobXml(subFolderName, name, lob, email)
+        def xmlStream = new ByteArrayInputStream(File("myjob.xml").text() )
+
+        def newName = name.replaceAll("Inside", "Existing")
+
+        def target = Jenkins.instance.getItemByFullName('Routing Engeniering/'+subFolderName)
+
+        target.createProjectFromXML(newName, xmlStream)
+
+//        enableJob(subFolderName, newName)
+
+        return newName+ " job successfully created"
+    }
+
     static enableJob(String subDir, String name){
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
