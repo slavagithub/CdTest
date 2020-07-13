@@ -41,7 +41,7 @@ pipeline {
 
         stage('Adding Jobs'){
             steps{
-               echo addJob("Routing",  "DEV2Deploy",  "new-job","\\myjob.xml")
+               echo addJob("Routing",  "DEV2Deploy",  "AAanew-job","\\myjob.xml")
             }
         }
 
