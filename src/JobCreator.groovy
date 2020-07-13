@@ -54,7 +54,7 @@ class JobCreator{
 
     static String addJobFromXml(String subFolderName, String name, String lob, String email){
 //        String content = getNewJobXml(subFolderName, name, lob, email)
-        def xmlStream = new ByteArrayInputStream(File("./myjob.xml").text() )
+        def xmlStream = new ByteArrayInputStream(new File("myjob.xml").text() )
 
         def newName = name.replaceAll("Inside", "Existing")
 
